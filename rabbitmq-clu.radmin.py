@@ -24,7 +24,6 @@ from flask import Flask, jsonify
 from flask import request
 
 app = Flask(__name__)
-app.debug = True
 
 @app.route('/')
 def running():
@@ -80,4 +79,4 @@ def disconnect_cluster():
         return jsonify(result={"status": 200, "info": 'Disconnected From Cluster ' + cluster_name + ' !'})
 
 if __name__ == '__main__':
-    app.run()
+    app.run(host='0.0.0.0')
