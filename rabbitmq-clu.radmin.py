@@ -24,10 +24,59 @@ from flask import Flask, jsonify
 from flask import request
 
 app = Flask(__name__)
+#app.debug = True
 
 @app.route('/')
 def running():
     return 'RabbitMQ Cluster REST admin is running !'
+
+
+@app.route('/api/0.1/setUpHosts', methods=['POST'])
+def setup_dns():
+    if not request.json:
+        abort(400)
+
+    cluster_nodes_definition = request.json
+    print cluster_nodes_definition
+    if cluster_nodes_definition is None:
+        abort(400)
+    else:
+        for node_definition in cluster_nodes_definition:
+            node_name = node_definition.get('nodeName')
+            node_fqdn = node_definition.get('nodeFQDN')
+
+            clean_host_if_needed_cmd = "rm=`more /etc/hosts | grep " + node_name + "` ; sed -i \"s#$rm##g\" /etc/hosts"
+            ret = subprocess.call(clean_host_if_needed_cmd, shell=True)
+
+            ip = None
+            ais = socket.getaddrinfo(node_fqdn, 0, 0, 0, 0)
+            for result in ais:
+                ip = str(result[-1][0])
+                break
+
+            host_entry = ip + "    " + node_name
+            add_host_entry_cmd = "echo \"" + host_entry + "\" >> /etc/hosts"
+            ret = subprocess.call(add_host_entry_cmd, shell=True)
+
+        return jsonify(result={"status": 200})
+
+@app.route('/api/0.1/cleanHosts', methods=['POST'])
+def clean_dns():
+    if not request.json:
+        abort(400)
+
+    cluster_nodes_definition = request.json
+    print cluster_nodes_definition
+    if cluster_nodes_definition is None:
+        abort(400)
+    else:
+        for node_definition in cluster_nodes_definition:
+            node_name = node_definition.get('nodeName')
+
+            clean_host_if_needed = "rm=`more /etc/hosts | grep " + node_name + "` ; sed -i \"s#$rm##g\" /etc/hosts"
+            ret = subprocess.call(clean_host_if_needed, shell=True)
+
+        return jsonify(result={"status": 200})
 
 @app.route('/api/0.1/connect', methods=['POST'])
 def connect_cluster():
