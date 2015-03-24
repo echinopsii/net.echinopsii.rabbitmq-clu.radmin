@@ -26,7 +26,7 @@ from flask import Flask, jsonify
 from flask import request
 
 app = Flask(__name__)
-app.debug = True
+#app.debug = True
 
 @app.route('/')
 def running():
@@ -39,7 +39,6 @@ def setup_dns():
         abort(400)
 
     cluster_nodes_definition = request.json
-    print cluster_nodes_definition
     if cluster_nodes_definition is None:
         abort(400)
     else:

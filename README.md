@@ -50,5 +50,5 @@ user@myrabbit3 $ curl -i -H "Content-Type: application/json" -X POST -d '{"clust
 and on each container host :
 
 ```
-curl -i -H "Content-Type: application/json" -X POST -d '[{"nodeName":"myrabbit1"},{"nodeName":"myrabbit2"},{"nodeName":"myrabbit3"}]' http://localhost:5000/api/0.1/cleanHosts
+curl -i -H "Content-Type: application/json" -X POST http://localhost:5000/api/0.1/cleanHosts
 ```
