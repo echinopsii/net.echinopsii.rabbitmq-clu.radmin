@@ -24,7 +24,7 @@ from flask import Flask, jsonify
 from flask import request
 
 app = Flask(__name__)
-#app.debug = True
+app.debug = True
 
 @app.route('/')
 def running():
